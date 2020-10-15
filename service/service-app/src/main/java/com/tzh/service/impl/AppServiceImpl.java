@@ -6,6 +6,7 @@ import com.tzh.constant.AppStatus;
 import com.tzh.entity.App;
 import com.tzh.entity.AppVersion;
 import com.tzh.service.AppService;
+import com.tzh.util.MyException;
 import com.tzh.util.file.FileUpload;
 import com.tzh.vo.AppVO;
 import com.tzh.vo.AppVersionVO;
@@ -74,16 +75,24 @@ public class AppServiceImpl implements AppService {
     /**
      * 修改"版本"的状态
      * @param versionId 版本id
-     * @return
+     * @return 返回修改后的"版本"
      */
     @Override
     public AppVersion checkApp(Long versionId) {
         Optional<AppVersion> appVersionOptional = appVersionDao.findById(versionId);
-        AppVersion appVersion = appVersionOptional.orElse(null);
-        appVersion.setStatus(AppStatus.CHECK);
-        return appVersionDao.save(appVersion);
+        if (appVersionOptional.isPresent()){
+            AppVersion appVersion = appVersionOptional.get();
+            appVersion.setStatus(AppStatus.CHECK);
+            return appVersionDao.save(appVersion);
+        }else {
+            throw new MyException("查找对应的版本失败");
+        }
     }
 
+    /**
+     * 根据id删除"应用"
+     * @param id id
+     */
     @Override
     public void delete(Long id) {
         appDao.deleteById(id);

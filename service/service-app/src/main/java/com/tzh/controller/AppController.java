@@ -50,8 +50,15 @@ public class AppController {
     @DeleteMapping("{id}")
     @ApiOperation(value = "下架应用")
     public ResultMap deleteApp(@PathVariable Long id){
-        appService.delete(id);
-        return ResultMap.ok().message("下架应用");
+        Optional<App> appOptional = appService.findById(id);
+
+        // 如果存在该值，返回值， 否则返回 other。appOptional.orElse(null);
+        if (appOptional.isPresent()){
+            appService.delete(id);
+            return ResultMap.ok().message("下架应用").data("app", appOptional.get());
+        }else {
+            return ResultMap.ok().message("该应用已经不存在");
+        }
     }
     /**
      * 根据"应用"id查找"应用"以及对应的"版本"
@@ -76,7 +83,7 @@ public class AppController {
      * @param versionId "版本"id
      * @return 返回审核成功的"版本"
      */
-    @GetMapping("check/{id}")
+    @GetMapping("check/{versionId}")
     public ResultMap checkApp(@PathVariable Long versionId){
         AppVersion appVersion = appService.checkApp(versionId);
         return ResultMap.ok().message("该版本审核成功").data("appVersion", appVersion);
