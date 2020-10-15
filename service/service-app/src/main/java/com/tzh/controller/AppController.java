@@ -43,9 +43,9 @@ public class AppController {
     }
 
     /**
-     * 根据应用id查找应用以及对应的版本
-     * @param id 应用id
-     * @return 返回用以及对应的版本
+     * 根据"应用"id查找"应用"以及对应的"版本"
+     * @param id "应用"id
+     * @return 返回用以及对应的"版本"
      */
     @GetMapping("{id}")
     @ApiOperation(value = "查找应用")

@@ -3,7 +3,7 @@ package com.tzh.constant;
 /**
  * @author TangZongHua
  * @date 2020/10/14
- * @description: App的状态常量
+ * @description: App的"状态"常量
  */
 public interface AppStatus {
     /**
