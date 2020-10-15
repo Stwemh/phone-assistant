@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -55,7 +56,7 @@ public class AppServiceImpl implements AppService {
 
         // 加关系实体对象，否在关联字段为nul
         appVersion.setApp(app);
-        app.setAppVersionList(Arrays.asList(appVersion));
+        app.setAppVersionList(Collections.singletonList(appVersion));
 
         return appDao.save(app);
     }
@@ -81,5 +82,10 @@ public class AppServiceImpl implements AppService {
         AppVersion appVersion = appVersionOptional.orElse(null);
         appVersion.setStatus(AppStatus.CHECK);
         return appVersionDao.save(appVersion);
+    }
+
+    @Override
+    public void delete(Long id) {
+        appDao.deleteById(id);
     }
 }

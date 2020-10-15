@@ -37,11 +37,22 @@ public class AppController {
      */
     @PostMapping()
     @ApiOperation(value = "上传应用")
-    public ResultMap uploadApp(AppVO appVO, MultipartFile file, HttpServletRequest request){
+    public ResultMap saveApp(AppVO appVO, MultipartFile file, HttpServletRequest request){
         App sava = appService.sava(appVO, file, request);
         return ResultMap.ok().message("上传应用").data("savaData", sava);
     }
 
+    /**
+     * 删除"应用"及其对应的"版本"信息
+     * @param id "应用id"
+     * @return 返回类型
+     */
+    @DeleteMapping("{id}")
+    @ApiOperation(value = "下架应用")
+    public ResultMap deleteApp(@PathVariable Long id){
+        appService.delete(id);
+        return ResultMap.ok().message("下架应用");
+    }
     /**
      * 根据"应用"id查找"应用"以及对应的"版本"
      * @param id "应用"id
@@ -49,7 +60,7 @@ public class AppController {
      */
     @GetMapping("{id}")
     @ApiOperation(value = "查找应用")
-    public ResultMap findAppById(Long id){
+    public ResultMap findAppById(@PathVariable Long id){
         Optional<App> appOptional = appService.findById(id);
 
         // 如果存在该值，返回值， 否则返回 other。appOptional.orElse(null);
@@ -66,7 +77,7 @@ public class AppController {
      * @return 返回审核成功的"版本"
      */
     @GetMapping("check/{id}")
-    public ResultMap checkApp(Long versionId){
+    public ResultMap checkApp(@PathVariable Long versionId){
         AppVersion appVersion = appService.checkApp(versionId);
         return ResultMap.ok().message("该版本审核成功").data("appVersion", appVersion);
     }

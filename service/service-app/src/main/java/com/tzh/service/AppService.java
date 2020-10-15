@@ -31,7 +31,9 @@ public interface AppService {
     /**
      * 修改"版本"的状态
      * @param versionId 版本id
-     * @return
+     * @return 修改后的"版本"
      */
     AppVersion checkApp(Long versionId);
+
+    void delete(Long id);
 }
