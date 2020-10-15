@@ -1,0 +1,73 @@
+package com.tzh.controller;
+
+import com.tzh.entity.App;
+import com.tzh.entity.AppVersion;
+import com.tzh.service.AppService;
+import com.tzh.util.MyResult.ResultMap;
+import com.tzh.util.file.FileUpload;
+import com.tzh.vo.AppVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
+
+/**
+ * @author TangZongHua
+ * @date 2020/10/15
+ * @description: App管理控制器
+ */
+@RestController
+@RequestMapping("app")
+@Api
+public class AppController {
+
+    @Autowired
+    private AppService appService;
+
+    /**
+     * 上传应用
+     * @param appVO 前端传入的appVO
+     * @param file app资源
+     * @param request HttpServletRequest
+     * @return 将上传成功的app信息保存到"savaData"返回
+     */
+    @PostMapping()
+    @ApiOperation(value = "上传应用")
+    public ResultMap uploadApp(AppVO appVO, MultipartFile file, HttpServletRequest request){
+        App sava = appService.sava(appVO, file, request);
+        return ResultMap.ok().message("上传应用").data("savaData", sava);
+    }
+
+    /**
+     * 根据应用id查找应用以及对应的版本
+     * @param id 应用id
+     * @return 返回用以及对应的版本
+     */
+    @GetMapping("{id}")
+    @ApiOperation(value = "查找应用")
+    public ResultMap findAppById(Long id){
+        Optional<App> appOptional = appService.findById(id);
+
+        // 如果存在该值，返回值， 否则返回 other。appOptional.orElse(null);
+        if (appOptional.isPresent()){
+            return ResultMap.ok().message("查找成功").data("app", appOptional.get());
+        }else {
+            return ResultMap.ok().message("没有结果");
+        }
+    }
+
+    /**
+     * 审核应用
+     * @param versionId "版本"id
+     * @return 返回审核成功的"版本"
+     */
+    @GetMapping("check/{id}")
+    public ResultMap checkApp(Long versionId){
+        AppVersion appVersion = appService.checkApp(versionId);
+        return ResultMap.ok().message("该版本审核成功").data("appVersion", appVersion);
+    }
+}
